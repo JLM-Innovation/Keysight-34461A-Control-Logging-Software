@@ -1,3 +1,8 @@
+# Intention of the forked repository
+Adding new project under [Keysight-34461A-Control-Logging-Software/src/New_Version/.Net_7.0/](https://github.com/JLM-Innovation/Keysight-34461A-Control-Logging-Software/tree/main/src/New_Version/.Net_7.0) based on *.Net 7* and *WPF* to control and log data from the **Agilent Keysight 34461A** via *TCP/IP*.
+
+# -- Original Readme --
+
 # HP Agilent Keysight 34401A Control and Data Logging Software
  This software allows you to control and log data from the HP Agilent Keysight 34401A multimeter. This software supports Windows 10, 7, 8, and 8.1. Windows Server 2019, 2016 and 2012 are also supported.
 
