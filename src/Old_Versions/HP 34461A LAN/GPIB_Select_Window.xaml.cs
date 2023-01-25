@@ -1,4 +1,5 @@
-﻿using Ivi.Visa;
+﻿using HP_34461A_LAN.InstrumentSession;
+using Ivi.Visa;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -121,11 +122,11 @@ namespace HP_34461A
         {
             try
             {
-                using (IVisaSession Instrument = GlobalResourceManager.Open(GPIB_Address, AccessModes.None, 2000))
+                using (IInstrumentSession instrumentSession = new VisaSession(GPIB_Address, (int)AccessModes.None, timeoutMiliseconds: 2000))
                 {
-                    Instrument.Dispose();
+                    instrumentSession.OpenSession();
+                    return instrumentSession.IsSessionOpen;
                 }
-                return true;
             }
             catch (Exception Ex)
             {
@@ -138,25 +139,14 @@ namespace HP_34461A
         {
             try
             {
-                using (IVisaSession Instrument = GlobalResourceManager.Open(GPIB_Address, AccessModes.None, 2000))
+                string Message_Data = "";
+                using (IInstrumentSession instrumentSession = new VisaSession(GPIB_Address, (int)AccessModes.None, timeoutMiliseconds: 2000))
                 {
-                    if (Instrument is IMessageBasedSession session)
-                    {
-                        session.TerminationCharacterEnabled = true;
-
-                        session.FormattedIO.WriteLine(Query_Command);
-                        string Message_Data = session.FormattedIO.ReadLine();
-
-                        Instrument.Dispose();
-
-                        return (true, Message_Data);
-                    }
-                    else
-                    {
-                        insert_Log("Query not possible at this moment.", Error_Code);
-                        return (false, "Query Failed.");
-                    }
+                    instrumentSession.OpenSession();
+                    instrumentSession.WriteLine(Query_Command);
+                    Message_Data = instrumentSession.ReadLine();
                 }
+                return (true, Message_Data);
             }
             catch (Exception Ex)
             {
@@ -169,20 +159,10 @@ namespace HP_34461A
         {
             try
             {
-                using (IVisaSession Instrument = GlobalResourceManager.Open(GPIB_Address, AccessModes.None, 2000))
+                using (IInstrumentSession instrumentSession = new VisaSession(GPIB_Address, (int)AccessModes.None, timeoutMiliseconds: 2000))
                 {
-                    if (Instrument is IMessageBasedSession session)
-                    {
-                        session.TerminationCharacterEnabled = true;
-
-                        session.FormattedIO.WriteLine(Write_Command);
-
-                        Instrument.Dispose();
-                    }
-                    else
-                    {
-                        insert_Log("Write command not possible at this moment.", Error_Code);
-                    }
+                    instrumentSession.OpenSession();
+                    instrumentSession.WriteLine(Write_Command);
                 }
             }
             catch (Exception Ex)
@@ -348,7 +328,7 @@ namespace HP_34461A
         private void Data_Updater()
         {
             GPIB_Address_Info.folder_Directory = folder_Directory;
-            GPIB_Address_Info.GPIB_Address = GPIB_Address;
+            GPIB_Address_Info.Instrument_Address = GPIB_Address;
             GPIB_Address_Info.isConnected = true;
         }
 

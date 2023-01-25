@@ -1,5 +1,4 @@
-﻿using Ivi.Visa;
-using Ivi.Visa.FormattedIO;
+﻿using HP_34461A_LAN.InstrumentSession;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,8 +22,8 @@ namespace HP_34461A
     {
         public static bool isConnected = false;
 
-        //HP 34401A GPIB Device Info
-        public static string GPIB_Address;
+        //Instrument Device Info
+        public static string Instrument_Address;
 
         public static string folder_Directory;
     }
@@ -45,9 +44,7 @@ namespace HP_34461A
         string Current_Measurement_Unit = "VDC";
 
         //HP34401A GPIB connection
-        public IMessageBasedSession session;
-        public MessageBasedFormattedIO formattedIO;
-
+        public IInstrumentSession instrumentSession;
         public int GPIB_Lock = 0;
 
         //Which Measurement is currently selected
@@ -209,7 +206,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VDC" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_VDC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VDC" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_VDC.txt", true))
                     {
                         for (int i = 0; i < VDC_Count; i++)
                         {
@@ -227,7 +224,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "ADC" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_ADC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "ADC" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_ADC.txt", true))
                     {
                         for (int i = 0; i < ADC_Count; i++)
                         {
@@ -245,7 +242,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VAC" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_VAC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VAC" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_VAC.txt", true))
                     {
                         for (int i = 0; i < VAC_Count; i++)
                         {
@@ -263,7 +260,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "AAC" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_AAC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "AAC" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_AAC.txt", true))
                     {
                         for (int i = 0; i < AAC_Count; i++)
                         {
@@ -281,7 +278,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "2WireOhms" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_2WireOhms.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "2WireOhms" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_2WireOhms.txt", true))
                     {
                         for (int i = 0; i < TwoOhm_Count; i++)
                         {
@@ -299,7 +296,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "4WireOhms" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_4WireOhms.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "4WireOhms" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_4WireOhms.txt", true))
                     {
                         for (int i = 0; i < FourOhm_Count; i++)
                         {
@@ -317,7 +314,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "FREQ" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_FREQ.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "FREQ" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_FREQ.txt", true))
                     {
                         for (int i = 0; i < FREQ_Count; i++)
                         {
@@ -335,7 +332,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "PER" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_PER.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "PER" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_PER.txt", true))
                     {
                         for (int i = 0; i < PER_Count; i++)
                         {
@@ -353,7 +350,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "DIODE" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_DIODE.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "DIODE" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_DIODE.txt", true))
                     {
                         for (int i = 0; i < DIODE_Count; i++)
                         {
@@ -371,7 +368,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "CONTINUITY" + @"\" + Date + "_" + GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_CONTINUITY.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "CONTINUITY" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_CONTINUITY.txt", true))
                     {
                         for (int i = 0; i < CONT_Count; i++)
                         {
@@ -426,7 +423,7 @@ namespace HP_34461A
                 Connect.IsEnabled = false;
                 unlockControls();
                 GPIB_Connect();
-                this.Title = "HP 34401A " + GPIB_Address_Info.GPIB_Address;
+                this.Title = "HP 34401A " + GPIB_Address_Info.Instrument_Address;
                 DataSampling = true;
                 saveOutputLog = true;
                 saveMeasurements = true;
@@ -662,12 +659,8 @@ namespace HP_34461A
 
         private void GPIB_Connect()
         {
-            session = GlobalResourceManager.Open(GPIB_Address_Info.GPIB_Address, (AccessModes)GPIB_Lock, 10000) as IMessageBasedSession;
-            session.TimeoutMilliseconds = 15000;
-            session.TerminationCharacterEnabled = true;
-            formattedIO = new MessageBasedFormattedIO(session);
-            formattedIO.ReadBufferSize = 8192;
-            formattedIO.WriteBufferSize = 8192;
+            instrumentSession = new VisaSession(GPIB_Address_Info.Instrument_Address, GPIB_Lock);
+            instrumentSession.OpenSession();
         }
 
         private void GPIB_Reconnect()
@@ -675,19 +668,9 @@ namespace HP_34461A
             try
             {
                 insert_Log("Trying to reestablish GPIB Connection, please Wait.", 2);
-                formattedIO = null;
-                if (GPIB_Lock == 1)
-                {
-                    session.UnlockResource();
-                }
-                session.Dispose();
+                instrumentSession.Dispose(); instrumentSession = null;
                 Thread.Sleep(10000);
-                session = GlobalResourceManager.Open(GPIB_Address_Info.GPIB_Address, (AccessModes)GPIB_Lock, 10000) as IMessageBasedSession;
-                session.TimeoutMilliseconds = 15000;
-                session.TerminationCharacterEnabled = true;
-                formattedIO = new MessageBasedFormattedIO(session);
-                formattedIO.ReadBufferSize = 8192;
-                formattedIO.WriteBufferSize = 8192;
+                GPIB_Connect();
                 insert_Log("GPIB Reconnect successful.", 0);
             }
             catch (Exception Ex)
@@ -699,13 +682,13 @@ namespace HP_34461A
 
         private string Query(string Command)
         {
-            formattedIO.WriteLine(Command);
-            return formattedIO.ReadLine();
+            instrumentSession.WriteLine(Command);
+            return instrumentSession.ReadLine();
         }
 
         private void Write(string Command)
         {
-            formattedIO.WriteLine(Command);
+            instrumentSession.WriteLine(Command);
         }
 
         private void Create_GetDataTimer()
@@ -1639,13 +1622,8 @@ namespace HP_34461A
                     }
                     break;
                 case "LOCAL_EXIT":
-                    session.Clear();
-                    if (GPIB_Lock == 1)
-                    {
-                        session.UnlockResource();
-                    }
-                    session.Dispose();
-                    session = null;
+                    instrumentSession.Dispose();
+                    instrumentSession = null;
                     Thread.Sleep(200);
                     Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); }, DispatcherPriority.Send);
                     break;
@@ -1878,7 +1856,7 @@ namespace HP_34461A
             //Saves output log to a text file
             if (saveOutputLog == true)
             {
-                writeToFile("[" + date + "]" + " " + Status + " " + Message, GPIB_Address_Info.folder_Directory, GPIB_Address_Info.GPIB_Address.Replace(":", "") + "_" + "Output Log.txt", true);
+                writeToFile("[" + date + "]" + " " + Status + " " + Message, GPIB_Address_Info.folder_Directory, GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_" + "Output Log.txt", true);
             }
         }
 
@@ -2213,7 +2191,7 @@ namespace HP_34461A
                 (string Measurement_Unit, string Graph_Y_Axis_Label) = MeasurementUnit_String();
                 Thread Waveform_Thread = new Thread(new ThreadStart(() =>
                 {
-                    HP34401A_Graph_Window = new Graphing_Window(Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.GPIB_Address);
+                    HP34401A_Graph_Window = new Graphing_Window(Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.Instrument_Address);
                     HP34401A_Graph_Window.Show();
                     HP34401A_Graph_Window.Closed += Close_Graph_Event;
                     Dispatcher.Run();
@@ -2381,7 +2359,7 @@ namespace HP_34461A
                 (string Measurement_Unit, string Graph_Y_Axis_Label) = MeasurementUnit_String();
                 Thread Waveform_Thread = new Thread(new ThreadStart(() =>
                 {
-                    HP34401A_N_Graph_Window = new N_Sample_Graph_Window(N_Samples, Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.GPIB_Address);
+                    HP34401A_N_Graph_Window = new N_Sample_Graph_Window(N_Samples, Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.Instrument_Address);
                     HP34401A_N_Graph_Window.Show();
                     HP34401A_N_Graph_Window.Closed += N_Sample_Close_Graph_Event;
                     Dispatcher.Run();
@@ -2447,7 +2425,7 @@ namespace HP_34461A
                 (string Measurement_Unit, string Graph_Y_Axis_Label) = MeasurementUnit_String();
                 Thread Waveform_Thread = new Thread(new ThreadStart(() =>
                 {
-                    HP34401A_DateTime_Graph_Window = new DateTime_Graph_Window(Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.GPIB_Address);
+                    HP34401A_DateTime_Graph_Window = new DateTime_Graph_Window(Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.Instrument_Address);
                     HP34401A_DateTime_Graph_Window.Show();
                     HP34401A_DateTime_Graph_Window.Closed += Close_DateTime_Graph_Event;
                     Dispatcher.Run();
@@ -2530,7 +2508,7 @@ namespace HP_34461A
             {
                 Thread Table_Thread = new Thread(new ThreadStart(() =>
                 {
-                    HP34401A_Table = new Measurement_Data_Table("HP 34401A " + GPIB_Address_Info.GPIB_Address);
+                    HP34401A_Table = new Measurement_Data_Table("HP 34401A " + GPIB_Address_Info.Instrument_Address);
                     HP34401A_Table.Show();
                     HP34401A_Table.Closed += Close_Table_Event;
                     Dispatcher.Run();
@@ -6533,12 +6511,8 @@ namespace HP_34461A
             {
                 if (GPIB_Address_Info.isConnected == true)
                 {
-                    if (GPIB_Lock == 1)
-                    {
-                        session.UnlockResource();
-                    }
-                    session.Dispose();
-                    session = null;
+                    instrumentSession.Dispose();
+                    instrumentSession = null;
                 }
             }
             catch (Exception)
