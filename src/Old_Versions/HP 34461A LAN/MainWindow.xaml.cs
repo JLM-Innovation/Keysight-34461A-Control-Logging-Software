@@ -18,14 +18,24 @@ using System.Windows.Threading;
 
 namespace HP_34461A
 {
+    public enum SessionType
+    {
+        Visa = 0,
+        Telnet = 1
+    }
+
     public static class GPIB_Address_Info
     {
         public static bool isConnected = false;
 
         //Instrument Device Info
         public static string Instrument_Address;
+        public static int Instrument_Port;
+
+        public static SessionType SessionType;
 
         public static string folder_Directory;
+
     }
 
     public partial class MainWindow : Window
@@ -187,7 +197,12 @@ namespace HP_34461A
             saveMeasurements_Timer.Enabled = false;
             saveMeasurements_Timer.Elapsed += Save_MeasurementData_to_files;
         }
-
+        public static string RemoveInvalidFilePathCharacters(string filename, string replaceChar = "")
+        {
+            string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            Regex r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
+            return r.Replace(filename, replaceChar);
+        }
         private void Save_MeasurementData_to_files(Object source, ElapsedEventArgs e)
         {
             string Date = DateTime.UtcNow.ToString("yyyy-MM-dd");
@@ -206,7 +221,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VDC" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_VDC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VDC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_VDC.txt", true))
                     {
                         for (int i = 0; i < VDC_Count; i++)
                         {
@@ -224,7 +239,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "ADC" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_ADC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "ADC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_ADC.txt", true))
                     {
                         for (int i = 0; i < ADC_Count; i++)
                         {
@@ -242,7 +257,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VAC" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_VAC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VAC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_VAC.txt", true))
                     {
                         for (int i = 0; i < VAC_Count; i++)
                         {
@@ -260,7 +275,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "AAC" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_AAC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "AAC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_AAC.txt", true))
                     {
                         for (int i = 0; i < AAC_Count; i++)
                         {
@@ -278,7 +293,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "2WireOhms" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_2WireOhms.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "2WireOhms" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_2WireOhms.txt", true))
                     {
                         for (int i = 0; i < TwoOhm_Count; i++)
                         {
@@ -296,7 +311,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "4WireOhms" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_4WireOhms.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "4WireOhms" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_4WireOhms.txt", true))
                     {
                         for (int i = 0; i < FourOhm_Count; i++)
                         {
@@ -314,7 +329,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "FREQ" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_FREQ.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "FREQ" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_FREQ.txt", true))
                     {
                         for (int i = 0; i < FREQ_Count; i++)
                         {
@@ -332,7 +347,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "PER" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_PER.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "PER" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_PER.txt", true))
                     {
                         for (int i = 0; i < PER_Count; i++)
                         {
@@ -350,7 +365,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "DIODE" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_DIODE.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "DIODE" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_DIODE.txt", true))
                     {
                         for (int i = 0; i < DIODE_Count; i++)
                         {
@@ -368,7 +383,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "CONTINUITY" + @"\" + Date + "_" + GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_CONTINUITY.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "CONTINUITY" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_CONTINUITY.txt", true))
                     {
                         for (int i = 0; i < CONT_Count; i++)
                         {
@@ -659,7 +674,16 @@ namespace HP_34461A
 
         private void GPIB_Connect()
         {
-            instrumentSession = new VisaSession(GPIB_Address_Info.Instrument_Address, GPIB_Lock);
+            switch (GPIB_Address_Info.SessionType)
+            {
+                case SessionType.Telnet:
+                    instrumentSession = new TelnetSession(GPIB_Address_Info.Instrument_Address, 5024, GPIB_Lock);
+                    break;
+                case SessionType.Visa:
+                default:
+                    instrumentSession = new VisaSession(GPIB_Address_Info.Instrument_Address, GPIB_Lock);
+                    break;
+            }
             instrumentSession.OpenSession();
         }
 
@@ -1856,7 +1880,7 @@ namespace HP_34461A
             //Saves output log to a text file
             if (saveOutputLog == true)
             {
-                writeToFile("[" + date + "]" + " " + Status + " " + Message, GPIB_Address_Info.folder_Directory, GPIB_Address_Info.Instrument_Address.Replace(":", "") + "_" + "Output Log.txt", true);
+                writeToFile("[" + date + "]" + " " + Status + " " + Message, GPIB_Address_Info.folder_Directory, RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_" + "Output Log.txt", true);
             }
         }
 

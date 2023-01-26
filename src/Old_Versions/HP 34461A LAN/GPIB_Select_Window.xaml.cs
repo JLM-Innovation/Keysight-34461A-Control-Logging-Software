@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,7 +33,8 @@ namespace HP_34461A
         List<string> GPIBList = new List<string>();
 
         //GPIB Port Information, updated by GUI
-        string GPIB_Address = "";
+        string Instrument_Address = "";
+        int Instrument_Port = 5024;
 
         //Save Data Directory
         string folder_Directory;
@@ -102,7 +104,7 @@ namespace HP_34461A
             {
                 string GPIB_Address_Selected = GPIB_List.SelectedItem.ToString().Split(new string[] { ": " }, StringSplitOptions.None).Last();
                 GPIB_Port.Text = GPIB_Address_Selected;
-                GPIB_Address = GPIB_Address_Selected;
+                Instrument_Address = GPIB_Address_Selected;
                 if (Is_GPIB_Address_In_Use() == true)
                 {
                     insert_Log("GPIB Address is open and ready for communication.", Success_Code);
@@ -122,7 +124,16 @@ namespace HP_34461A
         {
             try
             {
-                using (IInstrumentSession instrumentSession = new VisaSession(GPIB_Address, (int)AccessModes.None, timeoutMiliseconds: 2000))
+                IInstrumentSession instrumentSession;
+                if (GPIB_RB.IsChecked.GetValueOrDefault())
+                {
+                    instrumentSession = new VisaSession(Instrument_Address, (int)AccessModes.None, timeoutMiliseconds: 2000);
+                }
+                else
+                {
+                    instrumentSession = new TelnetSession(Instrument_Address, Instrument_Port, (int)AccessModes.None, timeoutMiliseconds: 2000);
+                }
+                using (instrumentSession)
                 {
                     instrumentSession.OpenSession();
                     return instrumentSession.IsSessionOpen;
@@ -140,7 +151,16 @@ namespace HP_34461A
             try
             {
                 string Message_Data = "";
-                using (IInstrumentSession instrumentSession = new VisaSession(GPIB_Address, (int)AccessModes.None, timeoutMiliseconds: 2000))
+                IInstrumentSession instrumentSession;
+                if (GPIB_RB.IsChecked.GetValueOrDefault())
+                {
+                    instrumentSession = new VisaSession(Instrument_Address, (int)AccessModes.None, timeoutMiliseconds: 2000);
+                }
+                else
+                {
+                    instrumentSession = new TelnetSession(Instrument_Address, Instrument_Port, (int)AccessModes.None, timeoutMiliseconds: 2000);
+                }
+                using (instrumentSession)
                 {
                     instrumentSession.OpenSession();
                     instrumentSession.WriteLine(Query_Command);
@@ -159,7 +179,16 @@ namespace HP_34461A
         {
             try
             {
-                using (IInstrumentSession instrumentSession = new VisaSession(GPIB_Address, (int)AccessModes.None, timeoutMiliseconds: 2000))
+                IInstrumentSession instrumentSession;
+                if (GPIB_RB.IsChecked.GetValueOrDefault())
+                {
+                    instrumentSession = new VisaSession(Instrument_Address, (int)AccessModes.None, timeoutMiliseconds: 2000);
+                }
+                else
+                {
+                    instrumentSession = new TelnetSession(Instrument_Address, Instrument_Port, (int)AccessModes.None, timeoutMiliseconds: 2000);
+                }
+                using (instrumentSession)
                 {
                     instrumentSession.OpenSession();
                     instrumentSession.WriteLine(Write_Command);
@@ -173,7 +202,8 @@ namespace HP_34461A
 
         private void HP34401A_Reset_Button_Click(object sender, RoutedEventArgs e)
         {
-            GPIB_Address = GPIB_Port.Text.Trim();
+            Instrument_Address = GPIB_RB.IsChecked.GetValueOrDefault() ? GPIB_Port.Text.Trim() : LAN_Address.Text.Trim();
+            int.TryParse(LAN_Port.Text.Trim(), out Instrument_Port);
             GPIB_Write("*RST");
         }
 
@@ -254,7 +284,8 @@ namespace HP_34461A
 
         private void Verify_34401A_Click(object sender, RoutedEventArgs e)
         {
-            GPIB_Address = GPIB_Port.Text.Trim();
+            Instrument_Address = GPIB_RB.IsChecked.GetValueOrDefault()?GPIB_Port.Text.Trim() : LAN_Address.Text.Trim();
+            int.TryParse(LAN_Port.Text.Trim(), out Instrument_Port);
             (bool Query_status, string Message) = GPIB_Query("*IDN?");
             if (Query_status == true)
             {
@@ -268,7 +299,8 @@ namespace HP_34461A
 
         private bool Connect_verify_34401A()
         {
-            GPIB_Address = GPIB_Port.Text.Trim();
+            Instrument_Address = GPIB_RB.IsChecked.GetValueOrDefault() ? GPIB_Port.Text.Trim() : LAN_Address.Text.Trim();
+            int.TryParse(LAN_Port.Text.Trim(), out Instrument_Port);
             (bool Query_status, string Message) = GPIB_Query("*IDN?");
             if (Query_status == true)
             {
@@ -290,7 +322,8 @@ namespace HP_34461A
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            GPIB_Address = GPIB_Port.Text.Trim();
+            Instrument_Address = GPIB_RB.IsChecked.GetValueOrDefault() ? GPIB_Port.Text.Trim() : LAN_Address.Text.Trim();
+            int.TryParse(LAN_Port.Text.Trim(), out Instrument_Port);
             if (folderCreation(folder_Directory) == 0)
             {
                 folderCreation(folder_Directory + @"\" + "VDC");
@@ -328,7 +361,9 @@ namespace HP_34461A
         private void Data_Updater()
         {
             GPIB_Address_Info.folder_Directory = folder_Directory;
-            GPIB_Address_Info.Instrument_Address = GPIB_Address;
+            GPIB_Address_Info.Instrument_Address = Instrument_Address;
+            GPIB_Address_Info.Instrument_Port = Instrument_Port;
+            GPIB_Address_Info.SessionType = GPIB_RB.IsChecked.GetValueOrDefault() ? SessionType.Visa : SessionType.Telnet;
             GPIB_Address_Info.isConnected = true;
         }
 
@@ -369,7 +404,7 @@ namespace HP_34461A
             string[] GPIB_Config_Parts = GPIB_Config_Data.Split(',');
             string GPIB_Address_Name = GPIB_Config_Parts[0];
             GPIB_Port.Text = GPIB_Address_Name;
-            GPIB_Address = GPIB_Address_Name;
+            Instrument_Address = GPIB_Address_Name;
         }
 
         private void GPIB_Config_Save_Click(object sender, RoutedEventArgs e)
@@ -388,6 +423,20 @@ namespace HP_34461A
                 insert_Log(Ex.Message, Error_Code);
                 insert_Log("Failed to save GPIB settings, try again.", Error_Code);
             }
+        }
+        private void LAN_Port_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            string mask = @"^[0-9]*$";
+            string text = ((TextBox)sender).Text;
+            e.Handled = !Regex.IsMatch(text + e.Text, mask);
+        }
+
+        private void LAN_Port_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            string mask = @"^[0-9]*$";
+            string text = (String)e.DataObject.GetData(typeof(String));
+            if (!Regex.IsMatch(text, mask))
+                e.CancelCommand();
         }
     }
 }

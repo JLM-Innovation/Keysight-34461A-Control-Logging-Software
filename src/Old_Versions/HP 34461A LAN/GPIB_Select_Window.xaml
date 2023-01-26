@@ -39,9 +39,17 @@
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <Label Content="GPIB Port Address:" Margin="0,0,0,0" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Left" FontSize="14"/>
-                <TextBox x:Name="GPIB_Port" Margin="0,0,0,2" TextWrapping="Wrap" VerticalContentAlignment="Center" FontSize="14" Text="" Grid.Column="0" Grid.Row="2"/>
+                <RadioButton x:Name="GPIB_RB" IsChecked="True" Content="GPIB Port Address:" Margin="0,0,0,0" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="14"/>
+                <TextBox x:Name="GPIB_Port" Margin="0,0,0,2" TextWrapping="Wrap" VerticalContentAlignment="Center" FontSize="14" Text="" Grid.Column="0" Grid.Row="2" IsEnabled="{Binding ElementName=GPIB_RB, Path=IsChecked}"/>
+                <RadioButton x:Name="LAN_RB" Content="IP Address / Hostname:" Margin="0,0,0,0" Grid.Column="0" Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="14"/>
+                <TextBox x:Name="LAN_Address" Text="K-34461A-00437" Margin="0,0,0,2" TextWrapping="Wrap" VerticalContentAlignment="Center" FontSize="14" Grid.Column="0" Grid.Row="4" IsEnabled="{Binding ElementName=LAN_RB, Path=IsChecked}"/>
+                <Label Content="Port" Margin="0,0,0,0" Grid.Column="0" Grid.Row="5" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="14"></Label>
+                <TextBox x:Name="LAN_Port" Text="5024" Margin="0,0,0,2" TextWrapping="Wrap" VerticalContentAlignment="Center" FontSize="14" Grid.Column="0" Grid.Row="6" IsEnabled="{Binding ElementName=LAN_RB, Path=IsChecked}" PreviewTextInput="LAN_Port_PreviewTextInput" DataObject.Pasting="LAN_Port_Pasting"/>
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Grid.Column="0" Margin="2,0,2,2">
