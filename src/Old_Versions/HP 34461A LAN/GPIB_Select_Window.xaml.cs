@@ -402,19 +402,42 @@ namespace HP_34461A
         private void Process_Config_File_Data(string GPIB_Config_Data)
         {
             string[] GPIB_Config_Parts = GPIB_Config_Data.Split(',');
-            string GPIB_Address_Name = GPIB_Config_Parts[0];
-            GPIB_Port.Text = GPIB_Address_Name;
-            Instrument_Address = GPIB_Address_Name;
+            Instrument_Address = GPIB_Config_Parts[0];
+            int.TryParse(GPIB_Config_Parts[1], out Instrument_Port);
+            SessionType sessionType;
+            Enum.TryParse(GPIB_Config_Parts[2], out sessionType);
+            switch (sessionType)
+            {
+                case SessionType.Telnet:
+                    LAN_RB.IsChecked = true;
+                    LAN_Address.Text = Instrument_Address;
+                    LAN_Port.Text = GPIB_Config_Parts[1];
+                    break;
+                default:
+                    GPIB_RB.IsChecked = true;
+                    GPIB_Port.Text = Instrument_Address;
+                    break;
+            }
+
         }
 
         private void GPIB_Config_Save_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string GPIB_Address = GPIB_Port.Text.Trim();
+                Instrument_Address = GPIB_RB.IsChecked.GetValueOrDefault() ? GPIB_Port.Text.Trim() : LAN_Address.Text.Trim();
+                int.TryParse(LAN_Port.Text.Trim(), out Instrument_Port);
+                SessionType sessionType = GPIB_RB.IsChecked.GetValueOrDefault() ? SessionType.Visa : SessionType.Telnet;
+                string[] GPIB_Config_Parts = new string[]
+                {
+                    Instrument_Address,
+                    Instrument_Port.ToString(),
+                    sessionType.ToString()
+                };
+
                 string Software_Location = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\" + "Settings_GPIB.txt";
 
-                string File_string = GPIB_Address + ",";
+                string File_string = string.Join(",", GPIB_Config_Parts);
                 File.WriteAllText(Software_Location, File_string);
                 insert_Log("GPIB settings saved.", Success_Code);
             }
