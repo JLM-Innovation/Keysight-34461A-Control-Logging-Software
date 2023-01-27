@@ -24,7 +24,7 @@ namespace HP_34461A
         Telnet = 1
     }
 
-    public static class GPIB_Address_Info
+    public static class Instrument_Address_Info
     {
         public static bool isConnected = false;
 
@@ -41,21 +41,21 @@ namespace HP_34461A
     public partial class MainWindow : Window
     {
         //Reference to the graph window
-        DateTime_Graph_Window HP34401A_DateTime_Graph_Window;
+        DateTime_Graph_Window DateTime_Graph_Window;
 
         //Reference to the graph window
-        Graphing_Window HP34401A_Graph_Window;
+        Graphing_Window Graph_Window;
 
         //Reference to the N graph Window
-        N_Sample_Graph_Window HP34401A_N_Graph_Window;
+        N_Sample_Graph_Window N_Graph_Window;
 
         //Reference to Measurement Table
-        Measurement_Data_Table HP34401A_Table;
+        Measurement_Data_Table Instrument_Data_Table;
         string Current_Measurement_Unit = "VDC";
 
-        //HP34401A GPIB connection
+        //Instrument connection
         public IInstrumentSession instrumentSession;
-        public int GPIB_Lock = 0;
+        public int Instrument_Lock = 0;
 
         //Which Measurement is currently selected
         int Measurement_Selected = 0;
@@ -128,7 +128,7 @@ namespace HP_34461A
         double UpdateSpeed = 1000;
 
         //COM Select Window
-        GPIB_Select_Window GPIB_Select;
+        Instrument_Select_Window Instrument_Select;
 
         //Timer for getting data from multimeter at specified update speed.
         private System.Timers.Timer Speech_MIN_Max;
@@ -183,10 +183,7 @@ namespace HP_34461A
             Save_measurements_to_files_Timer();
             Load_Main_Window_Settings();
             insert_Log("Click the Config Menu then click Connect.", 5);
-            insert_Log("VISA Compatible GPIB Adapter required.", 5);
-            insert_Log("NI-VISA 20.0 and Keysight IO Libraries Suite 2021.", 5);
-            insert_Log("If using Keysight 82357B, then Set NI-VISA as primary VISA.", 5);
-            insert_Log("This software only works with HP Agilent Keysight 34401A.", 5);
+            insert_Log("This software only works with HP Agilent Keysight 34461A.", 5);
         }
 
         private void Save_measurements_to_files_Timer()
@@ -221,7 +218,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VDC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_VDC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "VDC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_VDC.txt", true))
                     {
                         for (int i = 0; i < VDC_Count; i++)
                         {
@@ -239,7 +236,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "ADC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_ADC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "ADC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_ADC.txt", true))
                     {
                         for (int i = 0; i < ADC_Count; i++)
                         {
@@ -257,7 +254,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "VAC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_VAC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "VAC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_VAC.txt", true))
                     {
                         for (int i = 0; i < VAC_Count; i++)
                         {
@@ -275,7 +272,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "AAC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_AAC.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "AAC" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_AAC.txt", true))
                     {
                         for (int i = 0; i < AAC_Count; i++)
                         {
@@ -293,7 +290,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "2WireOhms" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_2WireOhms.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "2WireOhms" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_2WireOhms.txt", true))
                     {
                         for (int i = 0; i < TwoOhm_Count; i++)
                         {
@@ -311,7 +308,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "4WireOhms" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_4WireOhms.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "4WireOhms" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_4WireOhms.txt", true))
                     {
                         for (int i = 0; i < FourOhm_Count; i++)
                         {
@@ -329,7 +326,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "FREQ" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_FREQ.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "FREQ" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_FREQ.txt", true))
                     {
                         for (int i = 0; i < FREQ_Count; i++)
                         {
@@ -347,7 +344,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "PER" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_PER.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "PER" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_PER.txt", true))
                     {
                         for (int i = 0; i < PER_Count; i++)
                         {
@@ -365,7 +362,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "DIODE" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_DIODE.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "DIODE" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_DIODE.txt", true))
                     {
                         for (int i = 0; i < DIODE_Count; i++)
                         {
@@ -383,7 +380,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    using (TextWriter datatotxt = new StreamWriter(GPIB_Address_Info.folder_Directory + @"\" + "CONTINUITY" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_CONTINUITY.txt", true))
+                    using (TextWriter datatotxt = new StreamWriter(Instrument_Address_Info.folder_Directory + @"\" + "CONTINUITY" + @"\" + Date + "_" + RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_CONTINUITY.txt", true))
                     {
                         for (int i = 0; i < CONT_Count; i++)
                         {
@@ -431,14 +428,14 @@ namespace HP_34461A
             runtime_Timer.Start();
         }
 
-        public void GPIB_COM_Selected()
+        public void Instrument_Selected()
         {
-            if (GPIB_Address_Info.isConnected == true)
+            if (Instrument_Address_Info.isConnected == true)
             {
                 Connect.IsEnabled = false;
                 unlockControls();
-                GPIB_Connect();
-                this.Title = "HP 34401A " + GPIB_Address_Info.Instrument_Address;
+                Instrument_Connect();
+                this.Title = "Instrument " + Instrument_Address_Info.Instrument_Address;
                 DataSampling = true;
                 saveOutputLog = true;
                 saveMeasurements = true;
@@ -672,35 +669,26 @@ namespace HP_34461A
             DataTimer.Interval = UpdateSpeed;
         }
 
-        private void GPIB_Connect()
+        private void Instrument_Connect()
         {
-            switch (GPIB_Address_Info.SessionType)
-            {
-                case SessionType.Telnet:
-                    instrumentSession = new TelnetSession(GPIB_Address_Info.Instrument_Address, 5024, GPIB_Lock);
-                    break;
-                case SessionType.Visa:
-                default:
-                    instrumentSession = new VisaSession(GPIB_Address_Info.Instrument_Address, GPIB_Lock);
-                    break;
-            }
+            instrumentSession = new TelnetSession(Instrument_Address_Info.Instrument_Address, Instrument_Address_Info.Instrument_Port, Instrument_Lock);
             instrumentSession.OpenSession();
         }
 
-        private void GPIB_Reconnect()
+        private void Session_Reconnect()
         {
             try
             {
-                insert_Log("Trying to reestablish GPIB Connection, please Wait.", 2);
+                insert_Log("Trying to reestablish Connection, please Wait.", 2);
                 instrumentSession.Dispose(); instrumentSession = null;
                 Thread.Sleep(10000);
-                GPIB_Connect();
-                insert_Log("GPIB Reconnect successful.", 0);
+                Instrument_Connect();
+                insert_Log("Reconnect successful.", 0);
             }
             catch (Exception Ex)
             {
                 insert_Log(Ex.Message, 1);
-                insert_Log("GPIB Reconnect failed.", 1);
+                insert_Log("Reconnect failed.", 1);
             }
         }
 
@@ -719,7 +707,7 @@ namespace HP_34461A
         {
             DataTimer = new System.Timers.Timer();
             DataTimer.Interval = 1000;
-            DataTimer.Elapsed += HP34401ACommunicateEvent;
+            DataTimer.Elapsed += InstrumentCommunicateEvent;
             DataTimer.AutoReset = false;
         }
 
@@ -1105,7 +1093,7 @@ namespace HP_34461A
             }
         }
 
-        private void HP34401ACommunicateEvent(Object source, ElapsedEventArgs e)
+        private void InstrumentCommunicateEvent(Object source, ElapsedEventArgs e)
         {
             try
             {
@@ -1155,7 +1143,7 @@ namespace HP_34461A
                     insert_Log("Update Speed has been set to " + (UpdateSpeed / 1000) + " seconds.", 0);
                     DataTimer.Interval = UpdateSpeed;
                 }
-                GPIB_Reconnect();
+                Session_Reconnect();
                 DataTimer.Enabled = true;
             }
             finally
@@ -1231,7 +1219,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    HP34401A_Table.Table_Data_Queue.Add(Date + "," + data + "," + Current_Measurement_Unit);
+                    Instrument_Data_Table.Table_Data_Queue.Add(Date + "," + data + "," + Current_Measurement_Unit);
                 }
                 catch (Exception)
                 {
@@ -1244,7 +1232,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    HP34401A_Graph_Window.Data_Queue.Add(Date + "," + data);
+                    Graph_Window.Data_Queue.Add(Date + "," + data);
                 }
                 catch (Exception)
                 {
@@ -1257,7 +1245,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    HP34401A_N_Graph_Window.Data_Queue.Add(Date + "," + data);
+                    N_Graph_Window.Data_Queue.Add(Date + "," + data);
                 }
                 catch (Exception)
                 {
@@ -1270,7 +1258,7 @@ namespace HP_34461A
             {
                 try
                 {
-                    HP34401A_DateTime_Graph_Window.Data_Queue.Add(Date + "," + data);
+                    DateTime_Graph_Window.Data_Queue.Add(Date + "," + data);
                 }
                 catch (Exception)
                 {
@@ -1880,7 +1868,7 @@ namespace HP_34461A
             //Saves output log to a text file
             if (saveOutputLog == true)
             {
-                writeToFile("[" + date + "]" + " " + Status + " " + Message, GPIB_Address_Info.folder_Directory, RemoveInvalidFilePathCharacters(GPIB_Address_Info.Instrument_Address) + "_" + "Output Log.txt", true);
+                writeToFile("[" + date + "]" + " " + Status + " " + Message, Instrument_Address_Info.folder_Directory, RemoveInvalidFilePathCharacters(Instrument_Address_Info.Instrument_Address) + "_" + "Output Log.txt", true);
             }
         }
 
@@ -1908,17 +1896,17 @@ namespace HP_34461A
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            if (GPIB_Select == null)
+            if (Instrument_Select == null)
             {
-                GPIB_Select = new GPIB_Select_Window();
-                GPIB_Select.Closed += (a, b) => { GPIB_Select = null; GPIB_COM_Selected(); };
-                GPIB_Select.Owner = this;
-                GPIB_Select.Show();
+                Instrument_Select = new Instrument_Select_Window();
+                Instrument_Select.Closed += (a, b) => { Instrument_Select = null; Instrument_Selected(); };
+                Instrument_Select.Owner = this;
+                Instrument_Select.Show();
             }
             else
             {
-                GPIB_Select.Show();
-                insert_Log("GPIB Select Window is already open.", 2);
+                Instrument_Select.Show();
+                insert_Log("Instrument Select Window is already open.", 2);
             }
         }
 
@@ -1982,7 +1970,7 @@ namespace HP_34461A
         {
             try
             {
-                System.Diagnostics.Process.Start("explorer.exe", GPIB_Address_Info.folder_Directory);
+                System.Diagnostics.Process.Start("explorer.exe", Instrument_Address_Info.folder_Directory);
             }
             catch (Exception)
             {
@@ -2193,14 +2181,14 @@ namespace HP_34461A
         //---------------------------------Graph Options--------------------------------------
         private void ShowMeasurementGraph_Click(object sender, RoutedEventArgs e)
         {
-            if (HP34401A_Graph_Window == null)
+            if (Graph_Window == null)
             {
-                Create_HP34401A_Graph_Window();
+                Create_Graph_Window();
                 ShowMeasurementGraph.IsChecked = true;
                 AddDataGraph.IsChecked = true;
                 save_to_Graph = true;
                 Enable_AddDatatoGraph();
-                insert_Log("HP34401A Graph Module has been opened.", 0);
+                insert_Log("Graph Module has been opened.", 0);
             }
             else
             {
@@ -2208,16 +2196,16 @@ namespace HP_34461A
             }
         }
 
-        private void Create_HP34401A_Graph_Window()
+        private void Create_Graph_Window()
         {
             try
             {
                 (string Measurement_Unit, string Graph_Y_Axis_Label) = MeasurementUnit_String();
                 Thread Waveform_Thread = new Thread(new ThreadStart(() =>
                 {
-                    HP34401A_Graph_Window = new Graphing_Window(Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.Instrument_Address);
-                    HP34401A_Graph_Window.Show();
-                    HP34401A_Graph_Window.Closed += Close_Graph_Event;
+                    Graph_Window = new Graphing_Window(Measurement_Unit, Graph_Y_Axis_Label, "Instrument" + Instrument_Address_Info.Instrument_Address);
+                    Graph_Window.Show();
+                    Graph_Window.Closed += Close_Graph_Event;
                     Dispatcher.Run();
                 }));
                 Waveform_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
@@ -2229,14 +2217,14 @@ namespace HP_34461A
             catch (Exception Ex)
             {
                 insert_Log(Ex.Message, 1);
-                insert_Log("HP34401A Graph Window creation failed.", 1);
+                insert_Log("Graph Window creation failed.", 1);
             }
         }
 
         private void Close_Graph_Event(object sender, EventArgs e)
         {
-            HP34401A_Graph_Window.Dispatcher.InvokeShutdown();
-            HP34401A_Graph_Window = null;
+            Graph_Window.Dispatcher.InvokeShutdown();
+            Graph_Window = null;
             Close_Graph_Module();
         }
 
@@ -2244,7 +2232,7 @@ namespace HP_34461A
         {
             this.Dispatcher.Invoke(() =>
             {
-                if (HP34401A_Graph_Window == null & HP34401A_N_Graph_Window == null & HP34401A_DateTime_Graph_Window == null)
+                if (Graph_Window == null & N_Graph_Window == null & DateTime_Graph_Window == null)
                 {
                     Save_to_N_Graph = false;
                     Save_to_DateTime_Graph = false;
@@ -2253,7 +2241,7 @@ namespace HP_34461A
                 }
                 save_to_Graph = false;
                 ShowMeasurementGraph.IsChecked = false;
-                insert_Log("HP34401A Graph Module has been closed.", 0);
+                insert_Log("Graph Module has been closed.", 0);
             });
         }
 
@@ -2262,23 +2250,23 @@ namespace HP_34461A
             try
             {
                 (string Measurement_Unit, string Graph_Y_Axis_Label) = MeasurementUnit_String();
-                if (HP34401A_Graph_Window != null)
+                if (Graph_Window != null)
                 {
-                    HP34401A_Graph_Window.Measurement_Unit = Measurement_Unit;
-                    HP34401A_Graph_Window.Graph_Y_Axis_Label = Graph_Y_Axis_Label;
-                    HP34401A_Graph_Window.Graph_Reset = true;
+                    Graph_Window.Measurement_Unit = Measurement_Unit;
+                    Graph_Window.Graph_Y_Axis_Label = Graph_Y_Axis_Label;
+                    Graph_Window.Graph_Reset = true;
                 }
-                if (HP34401A_N_Graph_Window != null)
+                if (N_Graph_Window != null)
                 {
-                    HP34401A_N_Graph_Window.Measurement_Unit = Measurement_Unit;
-                    HP34401A_N_Graph_Window.Graph_Y_Axis_Label = Graph_Y_Axis_Label;
-                    HP34401A_N_Graph_Window.Graph_Reset = true;
+                    N_Graph_Window.Measurement_Unit = Measurement_Unit;
+                    N_Graph_Window.Graph_Y_Axis_Label = Graph_Y_Axis_Label;
+                    N_Graph_Window.Graph_Reset = true;
                 }
-                if (HP34401A_DateTime_Graph_Window != null)
+                if (DateTime_Graph_Window != null)
                 {
-                    HP34401A_DateTime_Graph_Window.Measurement_Unit = Measurement_Unit;
-                    HP34401A_DateTime_Graph_Window.Graph_Y_Axis_Label = Graph_Y_Axis_Label;
-                    HP34401A_DateTime_Graph_Window.Graph_Reset = true;
+                    DateTime_Graph_Window.Measurement_Unit = Measurement_Unit;
+                    DateTime_Graph_Window.Graph_Y_Axis_Label = Graph_Y_Axis_Label;
+                    DateTime_Graph_Window.Graph_Reset = true;
                 }
             }
             catch (Exception)
@@ -2289,7 +2277,7 @@ namespace HP_34461A
 
         private void AddDataGraph_Click(object sender, RoutedEventArgs e)
         {
-            if (AddDataGraph.IsChecked == true & HP34401A_Graph_Window != null)
+            if (AddDataGraph.IsChecked == true & Graph_Window != null)
             {
                 save_to_Graph = true;
                 insert_Log("Data will be added to Graph.", 0);
@@ -2299,7 +2287,7 @@ namespace HP_34461A
             {
                 save_to_Graph = false;
             }
-            if (AddDataGraph.IsChecked == true & HP34401A_N_Graph_Window != null)
+            if (AddDataGraph.IsChecked == true & N_Graph_Window != null)
             {
                 Save_to_N_Graph = true;
                 insert_Log("Data will be added to N Sample Waveform Graph.", 0);
@@ -2309,7 +2297,7 @@ namespace HP_34461A
             {
                 Save_to_N_Graph = false;
             }
-            if (AddDataGraph.IsChecked == true & HP34401A_DateTime_Graph_Window != null)
+            if (AddDataGraph.IsChecked == true & DateTime_Graph_Window != null)
             {
                 Save_to_DateTime_Graph = true;
                 insert_Log("Data will be added to DateTime Graph.", 0);
@@ -2319,7 +2307,7 @@ namespace HP_34461A
             {
                 Save_to_DateTime_Graph = false;
             }
-            if (HP34401A_Graph_Window == null & HP34401A_N_Graph_Window == null & HP34401A_DateTime_Graph_Window == null)
+            if (Graph_Window == null & N_Graph_Window == null & DateTime_Graph_Window == null)
             {
                 save_to_Graph = false;
                 Save_to_N_Graph = false;
@@ -2331,17 +2319,17 @@ namespace HP_34461A
 
         private void Enable_AddDatatoGraph()
         {
-            if (HP34401A_Graph_Window != null)
+            if (Graph_Window != null)
             {
                 save_to_Graph = true;
                 AddDataGraph.IsChecked = true;
             }
-            if (HP34401A_N_Graph_Window != null)
+            if (N_Graph_Window != null)
             {
                 Save_to_N_Graph = true;
                 AddDataGraph.IsChecked = true;
             }
-            if (HP34401A_DateTime_Graph_Window != null)
+            if (DateTime_Graph_Window != null)
             {
                 Save_to_DateTime_Graph = true;
                 AddDataGraph.IsChecked = true;
@@ -2355,14 +2343,14 @@ namespace HP_34461A
             {
                 if (N_Sample_Value >= 10)
                 {
-                    if (HP34401A_N_Graph_Window == null)
+                    if (N_Graph_Window == null)
                     {
-                        Create_HP34401A_N_Sample_Graph_Window((int)N_Sample_Value);
+                        Create_N_Sample_Graph_Window((int)N_Sample_Value);
                         Show_N_Sample_Graph.IsChecked = true;
                         AddDataGraph.IsChecked = true;
                         Save_to_N_Graph = true;
                         Enable_AddDatatoGraph();
-                        insert_Log("HP34401A N Sample Graph Module has been opened.", 0);
+                        insert_Log("N Sample Graph Module has been opened.", 0);
                     }
                 }
                 else
@@ -2376,16 +2364,16 @@ namespace HP_34461A
             }
         }
 
-        private void Create_HP34401A_N_Sample_Graph_Window(int N_Samples)
+        private void Create_N_Sample_Graph_Window(int N_Samples)
         {
             try
             {
                 (string Measurement_Unit, string Graph_Y_Axis_Label) = MeasurementUnit_String();
                 Thread Waveform_Thread = new Thread(new ThreadStart(() =>
                 {
-                    HP34401A_N_Graph_Window = new N_Sample_Graph_Window(N_Samples, Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.Instrument_Address);
-                    HP34401A_N_Graph_Window.Show();
-                    HP34401A_N_Graph_Window.Closed += N_Sample_Close_Graph_Event;
+                    N_Graph_Window = new N_Sample_Graph_Window(N_Samples, Measurement_Unit, Graph_Y_Axis_Label, "Instrument" + Instrument_Address_Info.Instrument_Address);
+                    N_Graph_Window.Show();
+                    N_Graph_Window.Closed += N_Sample_Close_Graph_Event;
                     Dispatcher.Run();
                 }));
                 Waveform_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
@@ -2397,14 +2385,14 @@ namespace HP_34461A
             catch (Exception Ex)
             {
                 insert_Log(Ex.Message, 1);
-                insert_Log("HP34401A N Sample Graph Window creation failed.", 1);
+                insert_Log("N Sample Graph Window creation failed.", 1);
             }
         }
 
         private void N_Sample_Close_Graph_Event(object sender, EventArgs e)
         {
-            HP34401A_N_Graph_Window.Dispatcher.InvokeShutdown();
-            HP34401A_N_Graph_Window = null;
+            N_Graph_Window.Dispatcher.InvokeShutdown();
+            N_Graph_Window = null;
             Close_N_Sample_Graph_Module();
         }
 
@@ -2412,7 +2400,7 @@ namespace HP_34461A
         {
             this.Dispatcher.Invoke(() =>
             {
-                if (HP34401A_Graph_Window == null & HP34401A_N_Graph_Window == null & HP34401A_DateTime_Graph_Window == null)
+                if (Graph_Window == null & N_Graph_Window == null & DateTime_Graph_Window == null)
                 {
                     save_to_Graph = false;
                     Save_to_DateTime_Graph = false;
@@ -2421,20 +2409,20 @@ namespace HP_34461A
                 }
                 Save_to_N_Graph = false;
                 Show_N_Sample_Graph.IsChecked = false;
-                insert_Log("HP34401A N Sample Graph Module has been closed.", 0);
+                insert_Log("N Sample Graph Module has been closed.", 0);
             });
         }
 
         private void Show_DateTime_Graph_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (HP34401A_DateTime_Graph_Window == null)
+            if (DateTime_Graph_Window == null)
             {
-                Create_HP34401A_DateTime_Graph_Window();
+                Create_DateTime_Graph_Window();
                 ShowDateTimeGraph.IsChecked = true;
                 AddDataGraph.IsChecked = true;
                 Save_to_DateTime_Graph = true;
                 Enable_AddDatatoGraph();
-                insert_Log("HP34401A DateTime Graph Module has been opened.", 0);
+                insert_Log("DateTime Graph Module has been opened.", 0);
             }
             else
             {
@@ -2442,16 +2430,16 @@ namespace HP_34461A
             }
         }
 
-        private void Create_HP34401A_DateTime_Graph_Window()
+        private void Create_DateTime_Graph_Window()
         {
             try
             {
                 (string Measurement_Unit, string Graph_Y_Axis_Label) = MeasurementUnit_String();
                 Thread Waveform_Thread = new Thread(new ThreadStart(() =>
                 {
-                    HP34401A_DateTime_Graph_Window = new DateTime_Graph_Window(Measurement_Unit, Graph_Y_Axis_Label, "HP 34401A " + GPIB_Address_Info.Instrument_Address);
-                    HP34401A_DateTime_Graph_Window.Show();
-                    HP34401A_DateTime_Graph_Window.Closed += Close_DateTime_Graph_Event;
+                    DateTime_Graph_Window = new DateTime_Graph_Window(Measurement_Unit, Graph_Y_Axis_Label, "Instrument" + Instrument_Address_Info.Instrument_Address);
+                    DateTime_Graph_Window.Show();
+                    DateTime_Graph_Window.Closed += Close_DateTime_Graph_Event;
                     Dispatcher.Run();
                 }));
                 Waveform_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
@@ -2463,14 +2451,14 @@ namespace HP_34461A
             catch (Exception Ex)
             {
                 insert_Log(Ex.Message, 1);
-                insert_Log("HP34401A Graph Window creation failed.", 1);
+                insert_Log("Graph Window creation failed.", 1);
             }
         }
 
         private void Close_DateTime_Graph_Event(object sender, EventArgs e)
         {
-            HP34401A_DateTime_Graph_Window.Dispatcher.InvokeShutdown();
-            HP34401A_DateTime_Graph_Window = null;
+            DateTime_Graph_Window.Dispatcher.InvokeShutdown();
+            DateTime_Graph_Window = null;
             Close_DateTime_Graph_Module();
         }
 
@@ -2478,7 +2466,7 @@ namespace HP_34461A
         {
             this.Dispatcher.Invoke(() =>
             {
-                if (HP34401A_Graph_Window == null & HP34401A_N_Graph_Window == null & HP34401A_DateTime_Graph_Window == null)
+                if (Graph_Window == null & N_Graph_Window == null & DateTime_Graph_Window == null)
                 {
                     save_to_Graph = false;
                     Save_to_N_Graph = false;
@@ -2487,7 +2475,7 @@ namespace HP_34461A
                 }
                 Save_to_DateTime_Graph = false;
                 ShowDateTimeGraph.IsChecked = false;
-                insert_Log("HP34401A DateTime Graph Module has been closed.", 0);
+                insert_Log("DateTime Graph Module has been closed.", 0);
             });
         }
 
@@ -2497,13 +2485,13 @@ namespace HP_34461A
 
         private void ShowTable_Click(object sender, RoutedEventArgs e)
         {
-            if (HP34401A_Table == null)
+            if (Instrument_Data_Table == null)
             {
-                Create_HP34401A_Table_Window();
+                Create_Table_Window();
                 AddDataTable.IsChecked = true;
                 ShowTable.IsChecked = true;
                 save_to_Table = true;
-                insert_Log("HP34401A Table Window has been opened.", 0);
+                insert_Log("Table Window has been opened.", 0);
             }
             else
             {
@@ -2513,7 +2501,7 @@ namespace HP_34461A
 
         private void AddDataTable_Click(object sender, RoutedEventArgs e)
         {
-            if (AddDataTable.IsChecked == true & HP34401A_Table != null)
+            if (AddDataTable.IsChecked == true & Instrument_Data_Table != null)
             {
                 save_to_Table = true;
                 insert_Log("Data will be added to the table.", 0);
@@ -2526,15 +2514,15 @@ namespace HP_34461A
             }
         }
 
-        private void Create_HP34401A_Table_Window()
+        private void Create_Table_Window()
         {
             try
             {
                 Thread Table_Thread = new Thread(new ThreadStart(() =>
                 {
-                    HP34401A_Table = new Measurement_Data_Table("HP 34401A " + GPIB_Address_Info.Instrument_Address);
-                    HP34401A_Table.Show();
-                    HP34401A_Table.Closed += Close_Table_Event;
+                    Instrument_Data_Table = new Measurement_Data_Table("Instrument " + Instrument_Address_Info.Instrument_Address);
+                    Instrument_Data_Table.Show();
+                    Instrument_Data_Table.Closed += Close_Table_Event;
                     Dispatcher.Run();
                 }));
                 Table_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
@@ -2546,14 +2534,14 @@ namespace HP_34461A
             catch (Exception Ex)
             {
                 insert_Log(Ex.Message, 1);
-                insert_Log("HP34401A Table Window creation failed.", 1);
+                insert_Log("Table Window creation failed.", 1);
             }
         }
 
         private void Close_Table_Event(object sender, EventArgs e)
         {
-            HP34401A_Table.Dispatcher.InvokeShutdown();
-            HP34401A_Table = null;
+            Instrument_Data_Table.Dispatcher.InvokeShutdown();
+            Instrument_Data_Table = null;
             Close_Table_Window();
         }
 
@@ -2564,7 +2552,7 @@ namespace HP_34461A
                 save_to_Table = false;
                 AddDataTable.IsChecked = false;
                 ShowTable.IsChecked = false;
-                insert_Log("HP34401A Table Window has been closed.", 0);
+                insert_Log("Table Window has been closed.", 0);
             });
         }
 
@@ -2843,15 +2831,14 @@ namespace HP_34461A
 
         private void DeviceSupport_Click(object sender, RoutedEventArgs e)
         {
-            insert_Log("This software was created for HP Agilent Keysight 34401A.", 4);
-            insert_Log("You will need a VISA Compatible GPIB Adapter.", 4);
-            insert_Log("NI-VISA 20.0 is recommended.", 4);
+            insert_Log("This software was created for HP Agilent Keysight 34461A.", 4);
         }
 
         private void Credits_Click(object sender, RoutedEventArgs e)
         {
-            insert_Log("Created by Niravk Patel.", 4);
-            insert_Log("Email: niravkp97@gmail.com", 4);
+            insert_Log("Forked from https://github.com/Niravk1997/HP-Agilent-Keysight-34401A-Control-and-Data-Logging-Software.", 4);
+            insert_Log("Repository: https://github.com/JLM-Innovation/Keysight-34461A-Control-Logging-Software", 4);
+            insert_Log("Autor: JLM Innovation GmbH", 4);
             insert_Log("This program was created using C# WPF .Net Framework 4.7.2", 4);
             insert_Log("Supports Windows 10, 8, 8.1, and 7", 4);
         }
@@ -6533,7 +6520,7 @@ namespace HP_34461A
         {
             try
             {
-                if (GPIB_Address_Info.isConnected == true)
+                if (Instrument_Address_Info.isConnected == true)
                 {
                     instrumentSession.Dispose();
                     instrumentSession = null;
@@ -6573,7 +6560,7 @@ namespace HP_34461A
                     Config_Parts = readFile.ReadLine().Split(',');
                     Initial_Set_Measurement_Prefix(Config_Parts[0].ToUpper().Trim());
                     Config_Parts = readFile.ReadLine().Split(',');
-                    Choose_GPIB_Lock(Config_Parts[0].ToUpper().Trim());
+                    Choose_Instrument_Lock(Config_Parts[0].ToUpper().Trim());
                     insert_Log("Settings.txt file loaded.", 0);
                 }
 
@@ -6585,22 +6572,22 @@ namespace HP_34461A
             }
         }
 
-        private void Choose_GPIB_Lock(string Set)
+        private void Choose_Instrument_Lock(string Set)
         {
             if (Set == "TRUE")
             {
-                insert_Log("GPIB Lock set to Exlusive Lock. Other software cannot communicate with HP34401A.", 0);
-                GPIB_Lock = 1;
+                insert_Log("Instrument Lock set to Exlusive Lock. Other software cannot communicate with the instrument.", 0);
+                Instrument_Lock = 1;
             }
             else if (Set == "FALSE")
             {
-                insert_Log("No GPIB Lock set. Other software can communicate with HP34401A.", 0);
-                GPIB_Lock = 0;
+                insert_Log("No Instrument Lock set. Other software can communicate with the instrument.", 0);
+                Instrument_Lock = 0;
             }
             else
             {
-                insert_Log("Bad String: " + "No GPIB Lock set. Other software can communicate with HP34401A.", 2);
-                GPIB_Lock = 0;
+                insert_Log("Bad String: " + "No Instrument Lock set. Other software can communicate with the instrument.", 2);
+                Instrument_Lock = 0;
             }
         }
 

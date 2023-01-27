@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HP_34461A"
         mc:Ignorable="d"
-        Title="HP 34401A" Height="670" Width="630" Closed="Main_Window_Closed">
+        Title="Agilent 34401A / 34461A" Height="670" Width="630" Closed="Main_Window_Closed">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -23,7 +23,7 @@
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Config" IsCheckable="False" IsChecked="False" Height="25">
                 <MenuItem.ToolTip>
-                    <ToolTip>Connect to HP 34401A.</ToolTip>
+                    <ToolTip>Connect to HP 34461A.</ToolTip>
                 </MenuItem.ToolTip>
                 <MenuItem x:Name="Connect" Header="Connect" IsCheckable="False" IsChecked="False" Click="Connect_Click"/>
                 <MenuItem x:Name="Stop_Sampling" Header="Sampling" IsCheckable="True" IsChecked="True" Click="Stop_Sampling_Click" IsEnabled="False"/>

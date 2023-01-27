@@ -3969,7 +3969,7 @@ namespace HP_34461A
 
         private void Plot_Data_in_MathWaveform_NSample_Button_Click(object sender, RoutedEventArgs e)
         {
-            string Window_Title = this.Title.Replace("HP 34401A", "");
+            string Window_Title = this.Title;
             Task.Run(() =>
             {
                 try

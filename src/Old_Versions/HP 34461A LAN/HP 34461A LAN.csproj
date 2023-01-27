@@ -67,10 +67,6 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files\IVI Foundation\VISA\Microsoft.NET\Framework64\v2.0.50727\VISA.NET Shared Components 5.11.0\Ivi.Visa.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
@@ -106,7 +102,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GPIB_Select_Window.xaml">
+    <Page Include="Instrument_Select_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -132,8 +128,8 @@
     <Compile Include="DateTime_Math_Waveform.xaml.cs">
       <DependentUpon>DateTime_Math_Waveform.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GPIB_Select_Window.xaml.cs">
-      <DependentUpon>GPIB_Select_Window.xaml</DependentUpon>
+    <Compile Include="Instrument_Select_Window.xaml.cs">
+      <DependentUpon>Instrument_Select_Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="Graphing_Window.xaml.cs">
       <DependentUpon>Graphing_Window.xaml</DependentUpon>
@@ -143,7 +139,6 @@
     </Compile>
     <Compile Include="InstrumentSession\IInstrumentSession.cs" />
     <Compile Include="InstrumentSession\TelnetSession.cs" />
-    <Compile Include="InstrumentSession\VisaSession.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
